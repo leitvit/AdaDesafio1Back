@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: consumer-for-sqs
+  datasource:
+    url: jdbc:postgresql://localhost:5432/consumer
+    username: ada-lovelace
+    password: cielo123
+  liquibase:
+    change-log: classpath:/db/changelog/changelog-master.yaml
+  jpa:
+    hibernate:
+      ddl-auto: update
+    generate-ddl: false
+    properties:
+      hibernate:
+        show_sql: true
+        hbm2ddl:
+          auto: update
+  sql:
+    init:
+      mode: always
+      continue-on-error: true
