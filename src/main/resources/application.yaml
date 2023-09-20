@@ -20,3 +20,7 @@ spring:
     init:
       mode: always
       continue-on-error: true
+
+server:
+  servlet:
+    context-path: /api/feedback

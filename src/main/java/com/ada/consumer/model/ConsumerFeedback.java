@@ -1,6 +1,11 @@
+package com.ada.consumer.model;
+
+import lombok.Data;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+@Data
 public class ConsumerFeedback {
 
     public enum type {
@@ -12,18 +17,7 @@ public class ConsumerFeedback {
     private String id;
     private String message;
     private type feedbackType;
-    private status feedbackStatus;
-
-    public ConsumerFeedback(type t, String message) {
-        this.message = message;
-        this.id = generateId(message);
-        this.feedbackStatus = status.RECEBIDO;
-        this.feedbackType = t;
-    }
-
-    public void setStatus(status s){
-        this.feedbackStatus = s;
-    }
+    private status feedbackStatus = status.RECEBIDO;
 
     @Override
     public String toString() {
