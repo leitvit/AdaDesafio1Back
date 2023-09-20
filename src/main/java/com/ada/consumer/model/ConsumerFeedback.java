@@ -1,6 +1,7 @@
 package com.ada.consumer.model;
 
 import lombok.Data;
+import lombok.Getter;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -8,7 +9,7 @@ import java.security.NoSuchAlgorithmException;
 @Data
 public class ConsumerFeedback {
 
-    public enum type {
+    public enum MessageType {
         ELOGIO, CRITICA, SUGESTAO
     }
     public enum status {
@@ -16,7 +17,8 @@ public class ConsumerFeedback {
     }
     private String id;
     private String message;
-    private type feedbackType;
+
+    @Getter private MessageType feedbackType;
     private status feedbackStatus = status.RECEBIDO;
 
     @Override

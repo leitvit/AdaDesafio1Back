@@ -25,7 +25,10 @@ server:
   servlet:
     context-path: /api/feedback
 
-cloud:
-  aws:
-    region:
-      static: "us-east-1"
+aws:
+  sns:
+    default-group-id: 1
+    topic-arn:
+      elogios: arn:aws:sns:us-east-1:258160824945:bootcamp-desafio1-sns-topicoelogios.fifo
+      sugestoes: arn:aws:sns:us-east-1:258160824945:bootcamp-desafio1-sns-topicosugestoes.fifo
+      criticas: arn:aws:sns:us-east-1:258160824945:bootcamp-desafio1-sns-topicocriticas.fifo
