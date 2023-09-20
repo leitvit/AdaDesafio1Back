@@ -5,7 +5,7 @@ public class CustomerFeedback {
 
     public enum MessageTypes {
         SUGGESTION, COMPLIMENT, CRITICISM
-    };
+    }
 
     private long Id;
     private String Status;
