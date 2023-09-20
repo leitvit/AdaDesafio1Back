@@ -20,3 +20,8 @@ spring:
     init:
       mode: always
       continue-on-error: true
+
+cloud:
+  aws:
+    region:
+      static: "us-east-1"
