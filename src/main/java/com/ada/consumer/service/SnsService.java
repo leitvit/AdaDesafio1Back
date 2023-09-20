@@ -34,7 +34,7 @@ public class SnsService {
         snsTopicArnMapping.put(ConsumerFeedback.FeedbackType.ELOGIO, TopicArnElogio);
         snsTopicArnMapping.put(ConsumerFeedback.FeedbackType.CRITICA, TopicArnCriticas);
         snsTopicArnMapping.put(ConsumerFeedback.FeedbackType.SUGESTAO, TopicArnSugestoes);
-    };
+    }
 
     public PublishResponse publishMessageToSNSTopic(ConsumerFeedback consumerFeedback) {
         ConsumerFeedback.FeedbackType feedbackType = consumerFeedback.getFeedbackType();
