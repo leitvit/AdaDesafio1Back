@@ -29,6 +29,6 @@ aws:
   sns:
     default-group-id: 1
     topic-arn:
-      elogios: arn:aws:sns:us-east-1:258160824945:bootcamp-desafio1-sns-topicoelogios.fifo
-      sugestoes: arn:aws:sns:us-east-1:258160824945:bootcamp-desafio1-sns-topicosugestoes.fifo
-      criticas: arn:aws:sns:us-east-1:258160824945:bootcamp-desafio1-sns-topicocriticas.fifo
+      elogios: arn:aws:sns:us-east-1:908737804402:elogios.fifo
+      sugestoes: arn:aws:sns:us-east-1:908737804402:sugestoes.fifo
+      criticas: arn:aws:sns:us-east-1:908737804402:sns-topic-critica.fifo
