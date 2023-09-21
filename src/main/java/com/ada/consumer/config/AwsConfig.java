@@ -9,7 +9,7 @@ import software.amazon.awssdk.services.sns.SnsClient;
 import software.amazon.awssdk.services.sqs.SqsClient;
 
 @Configuration
-public class AwsSnsConfig {
+public class AwsConfig {
     @Primary
     @Bean
     public SnsClient AwsSnsClient() {
