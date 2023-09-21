@@ -24,7 +24,7 @@ public class FeedbackController {
         } catch (Exception ex) {
             return ResponseEntity
                     .internalServerError()
-                    .body("There was an error with the queu sevice. Try again in a few seconds.");
+                    .body("There was an error with the queue service. Try again in a few seconds.");
         }
     }
 }
