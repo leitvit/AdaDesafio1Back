@@ -1,23 +1,29 @@
 package com.ada.consumer.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 @Data
+@AllArgsConstructor
 public class ConsumerFeedback {
 
-    public enum type {
+    public enum FeedbackType {
         ELOGIO, CRITICA, SUGESTAO
     }
-    public enum status {
+    public enum Status {
         RECEBIDO, PROCESSANDO, FINALIZADO
     }
     private String id;
     private String message;
-    private type feedbackType;
-    private status feedbackStatus = status.RECEBIDO;
+
+    @Getter
+    private FeedbackType feedbackType;
+    @Getter
+    private Status feedbackStatus = Status.RECEBIDO;
 
     @Override
     public String toString() {
