@@ -67,6 +67,7 @@ public class SnsService {
                 .message(messageBody)
                 .messageGroupId(defaultGroupId)
                 .topicArn(topicArn)
+                .messageDeduplicationId(consumerFeedback.getId())
                 .build();
 
         PublishResponse publishResponse = snsClient.publish(publishRequest);
