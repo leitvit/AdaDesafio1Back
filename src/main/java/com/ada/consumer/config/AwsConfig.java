@@ -12,7 +12,7 @@ import software.amazon.awssdk.services.sqs.SqsClient;
 public class AwsConfig {
     @Primary
     @Bean
-    public SnsClient AwsSnsClient() {
+    public SnsClient buildNotificationClient() {
         return SnsClient.builder()
                 .region(Region.US_EAST_1)
                 .credentialsProvider(ProfileCredentialsProvider.create())
@@ -20,7 +20,7 @@ public class AwsConfig {
     }
 
     @Bean
-    public SqsClient sqsClientBean() {
+    public SqsClient buildQueueClient() {
         return SqsClient.builder()
                 .region(Region.US_EAST_1)
                 .credentialsProvider(ProfileCredentialsProvider.create())
