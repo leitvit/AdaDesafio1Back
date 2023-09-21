@@ -17,21 +17,14 @@ public class ConsumerFeedback {
     public enum Status {
         RECEBIDO, PROCESSANDO, FINALIZADO
     }
+
     private String id;
+
     private String message;
 
-    @Getter
     private FeedbackType feedbackType;
-    @Getter
-    private Status feedbackStatus = Status.RECEBIDO;
 
-    @Override
-    public String toString() {
-        return "Feedback ID: " + id +
-                "\nType: " + feedbackType +
-                "\nStatus: " + feedbackStatus +
-                "\nMessage: " + message;
-    }
+    private Status feedbackStatus = Status.RECEBIDO;
 
     private String generateId(String message) { //the use of a hash as the id eliminates the need to call databases or APIs, reducing latency
         try {

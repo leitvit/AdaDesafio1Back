@@ -1,19 +1,28 @@
 package com.ada.consumer.service;
 
 import com.ada.consumer.model.ConsumerFeedback;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.sns.SnsClient;
-import software.amazon.awssdk.services.sns.model.PublishRequest;
-import software.amazon.awssdk.services.sns.model.PublishResponse;
+import software.amazon.awssdk.services.sns.model.*;
 
 import javax.annotation.PostConstruct;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 @Service
 public class SnsService {
+
+    Logger logger = LoggerFactory.getLogger(SnsService.class);
+
+    final String COMPLIMENTS_TOPIC_NAME = "cielo_compliments";
+    final String CRITICS_TOPIC_NAME = "cielo_critics";
+    final String SUGGESTIONS_TOPIC_NAME = "cielo_suggestions";
 
     @Autowired
     SnsClient snsClient;
@@ -30,25 +39,67 @@ public class SnsService {
     HashMap<ConsumerFeedback.FeedbackType, String> snsTopicArnMapping = new HashMap<>();
 
     @PostConstruct
-    public void populateMap() {
-        snsTopicArnMapping.put(ConsumerFeedback.FeedbackType.ELOGIO, TopicArnElogio);
-        snsTopicArnMapping.put(ConsumerFeedback.FeedbackType.CRITICA, TopicArnCriticas);
-        snsTopicArnMapping.put(ConsumerFeedback.FeedbackType.SUGESTAO, TopicArnSugestoes);
+    public void initClients() {
+
+        //Creates topic if there`s none arn in config yaml
+        String complimentsTopicArn = TopicArnElogio.isEmpty() ? createSnsTopic(COMPLIMENTS_TOPIC_NAME) : TopicArnElogio;
+        String criticsTopicArn = TopicArnCriticas.isEmpty() ? createSnsTopic(CRITICS_TOPIC_NAME) : TopicArnCriticas;
+        String suggestionsTopicArn = TopicArnSugestoes.isEmpty() ? createSnsTopic(SUGGESTIONS_TOPIC_NAME) : TopicArnSugestoes;
+
+        snsTopicArnMapping.put(ConsumerFeedback.FeedbackType.ELOGIO, complimentsTopicArn);
+        snsTopicArnMapping.put(ConsumerFeedback.FeedbackType.CRITICA, criticsTopicArn);
+        snsTopicArnMapping.put(ConsumerFeedback.FeedbackType.SUGESTAO, suggestionsTopicArn);
+
     }
 
-    public PublishResponse publishMessageToSNSTopic(ConsumerFeedback consumerFeedback) {
+    /**
+     *
+     * @param consumerFeedback
+     * @returns publishedMessageId
+     * @throws RuntimeException in case of unsuccesfull publishing
+     */
+    public String publishMessageToSNSTopic(ConsumerFeedback consumerFeedback) throws RuntimeException {
         ConsumerFeedback.FeedbackType feedbackType = consumerFeedback.getFeedbackType();
         String messageBody = consumerFeedback.getMessage();
         String topicArn = snsTopicArnMapping.get(feedbackType);
-        System.out.println(topicArn);
 
         PublishRequest publishRequest = PublishRequest.builder()
                 .message(messageBody)
                 .messageGroupId(defaultGroupId)
                 .topicArn(topicArn)
+                .messageDeduplicationId(consumerFeedback.getId())
                 .build();
 
-        return snsClient.publish(publishRequest);
+        PublishResponse publishResponse = snsClient.publish(publishRequest);
+
+        if (publishResponse.sdkHttpResponse().isSuccessful()) {
+            return publishResponse.messageId();
+        } else {
+            throw new RuntimeException("Publishing message wasn't succesfull." + publishResponse.responseMetadata());
+        }
+    }
+
+    private String createSnsTopic(String topicName) {
+        try {
+
+            Map<String, String> topicAttributes = Map.of(
+                    "FifoTopic", "true",
+                    "ContentBasedDeduplication", "false");
+
+            CreateTopicRequest topicRequestCompliments = CreateTopicRequest.builder()
+                            .name(topicName)
+                            .attributes(topicAttributes)
+                            .build();
+
+            CreateTopicResponse complimentsTopicResponse = snsClient.createTopic(topicRequestCompliments);
+
+            logger.info("Created " + topicName + " SNS topic.");
+
+            return complimentsTopicResponse.topicArn();
+        } catch (SnsException snsEx) {
+            logger.error("Couldn't create SNS topic: ", snsEx);
+            throw snsEx;
+        }
     }
 
 }
