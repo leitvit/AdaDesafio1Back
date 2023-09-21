@@ -23,6 +23,7 @@ public class FeedbackService {
                 ConsumerFeedback.Status.RECEBIDO
         );
 
+        //saving to a variable for cleaner readability
         var messageId = snsService.publishMessageToSNSTopic(consumerFeedback);
 
         return messageId;
