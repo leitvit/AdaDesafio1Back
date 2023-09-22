@@ -11,7 +11,6 @@ import software.amazon.awssdk.services.sns.model.*;
 
 import javax.annotation.PostConstruct;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 
@@ -28,11 +27,11 @@ public class SnsService {
     SnsClient snsClient;
 
     @Value("${aws.sns.topic-arn.elogios}")
-    String TopicArnElogio;
+    String topicArnElogio;
     @Value("${aws.sns.topic-arn.sugestoes}")
-    String TopicArnSugestoes;
+    String topicArnSugestoes;
     @Value("${aws.sns.topic-arn.criticas}")
-    String TopicArnCriticas;
+    String topicArnCriticas;
     @Value("${aws.sns.default-group-id}")
     String defaultGroupId;
 
@@ -42,9 +41,9 @@ public class SnsService {
     public void initClients() {
 
         //Creates topic if there`s none arn in config yaml
-        String complimentsTopicArn = TopicArnElogio.isEmpty() ? createSnsTopic(COMPLIMENTS_TOPIC_NAME) : TopicArnElogio;
-        String criticsTopicArn = TopicArnCriticas.isEmpty() ? createSnsTopic(CRITICS_TOPIC_NAME) : TopicArnCriticas;
-        String suggestionsTopicArn = TopicArnSugestoes.isEmpty() ? createSnsTopic(SUGGESTIONS_TOPIC_NAME) : TopicArnSugestoes;
+        String complimentsTopicArn = topicArnElogio.isEmpty() ? createSnsTopic(COMPLIMENTS_TOPIC_NAME) : topicArnElogio;
+        String criticsTopicArn = topicArnCriticas.isEmpty() ? createSnsTopic(CRITICS_TOPIC_NAME) : topicArnCriticas;
+        String suggestionsTopicArn = topicArnSugestoes.isEmpty() ? createSnsTopic(SUGGESTIONS_TOPIC_NAME) : topicArnSugestoes;
 
         snsTopicArnMapping.put(ConsumerFeedback.FeedbackType.ELOGIO, complimentsTopicArn);
         snsTopicArnMapping.put(ConsumerFeedback.FeedbackType.CRITICA, criticsTopicArn);
