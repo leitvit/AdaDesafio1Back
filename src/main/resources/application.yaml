@@ -20,6 +20,10 @@ spring:
     init:
       mode: always
       continue-on-error: true
+  jackson:
+  serialization:
+    FAIL_ON_EMPTY_BEANS: false
+
 
 server:
   servlet:
