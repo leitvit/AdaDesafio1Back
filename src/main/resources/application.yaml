@@ -36,3 +36,8 @@ aws:
       elogios: arn:aws:sns:us-east-1:258160824945:bootcamp-desafio1-sns-topicoelogios.fifo
       sugestoes: arn:aws:sns:us-east-1:258160824945:bootcamp-desafio1-sns-topicosugestoes.fifo
       criticas: arn:aws:sns:us-east-1:258160824945:bootcamp-desafio1-sns-topicocriticas.fifo
+  sqs:
+    queue-url:
+      elogios: https://sqs.us-east-1.amazonaws.com/258160824945/bootcamp-desafio1-sqs-elogios.fifo
+      sugestoes: https://sqs.us-east-1.amazonaws.com/258160824945/bootcamp-desafio1-sqs-sugestoes.fifo
+      criticas: https://sqs.us-east-1.amazonaws.com/258160824945/bootcamp-desafio1-sqs-criticas.fifo
