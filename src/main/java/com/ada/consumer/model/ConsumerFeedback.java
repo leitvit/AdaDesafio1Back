@@ -1,5 +1,6 @@
 package com.ada.consumer.model;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -11,8 +12,11 @@ import java.security.NoSuchAlgorithmException;
 @AllArgsConstructor
 public class ConsumerFeedback {
 
+    @Schema(description = "Tipo de feedback")
     public enum FeedbackType {
-        ELOGIO, CRITICA, SUGESTAO
+        ELOGIO,
+        CRITICA,
+        SUGESTAO
     }
     public enum Status {
         RECEBIDO, PROCESSANDO, FINALIZADO
