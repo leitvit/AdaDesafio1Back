@@ -53,17 +53,19 @@ public class QueueService {
 
     public List<List<Message>> getAllInformation() {
         // here we must poll the three queues and return the parsed content summarized
-        List<software.amazon.awssdk.services.sqs.model.Message> messages = new ArrayList<>();
-        List<List<software.amazon.awssdk.services.sqs.model.Message>> allinfo = new ArrayList<List<software.amazon.awssdk.services.sqs.model.Message>>();
-        List<String> URLs = Arrays.asList("https://sqs.us-east-1.amazonaws.com/908737804402/criticas.fifo", "https://sqs.us-east-1.amazonaws.com/908737804402/elogios.fifo", "https://sqs.us-east-1.amazonaws.com/908737804402/sugestoes.fifo");
+        List<software.amazon.awssdk.services.sqs.model.Message> messages;
+        List<List<software.amazon.awssdk.services.sqs.model.Message>> allinfo = new ArrayList<>();
+        List<String> URLs = Arrays.asList(
+                queueUrlCriticas,
+                queueUrlElogio,
+                queueUrlSugestoes
+        );
         for(String s: URLs) {
             ReceiveMessageRequest receiveMessageRequest = ReceiveMessageRequest.builder()
                     .queueUrl(s)
                     .build();
             messages = sqsClient.receiveMessage(receiveMessageRequest).messages();
             allinfo.add(messages);
-            System.out.println(messages);
-            System.out.println("\n");
         }
         return allinfo;
     }
