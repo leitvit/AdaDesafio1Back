@@ -3,7 +3,6 @@ package com.ada.consumer.model;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
