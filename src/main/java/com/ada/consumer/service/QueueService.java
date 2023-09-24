@@ -51,21 +51,15 @@ public class QueueService {
         return Integer.parseInt(attributesResponse.attributes().get(QueueAttributeName.APPROXIMATE_NUMBER_OF_MESSAGES));
     }
 
-    public Map<String, String> getAllInformation() {
+    public List<List<Message>> getAllInformation() {
         // here we must poll the three queues and return the parsed content summarized
-        List<String> readable_results = new ArrayList<String>();
-        List<software.amazon.awssdk.services.sqs.model.Message> messages = new ArrayList<>();
-        List<List<software.amazon.awssdk.services.sqs.model.Message>> allinfo = new ArrayList<List<software.amazon.awssdk.services.sqs.model.Message>>();
+        List<software.amazon.awssdk.services.sqs.model.Message> messages;
+        List<List<software.amazon.awssdk.services.sqs.model.Message>> allinfo = new ArrayList<>();
         List<String> URLs = Arrays.asList(
-                "https://sqs.us-east-1.amazonaws.com/908737804402/criticas.fifo",
-                "https://sqs.us-east-1.amazonaws.com/908737804402/elogios.fifo",
-                "https://sqs.us-east-1.amazonaws.com/908737804402/sugestoes.fifo");
-        String readable_aux = "";
-        String key = "";
-        List<String> keys = new ArrayList<String>();
-        keys.add("criticas"); keys.add("elogios"); keys.add("sugestoes");
-        Map<String, String> dict = new HashMap<String, String>();
-
+                queueUrlCriticas,
+                queueUrlElogio,
+                queueUrlSugestoes
+        );
         for(String s: URLs) {
             ReceiveMessageRequest receiveMessageRequest = ReceiveMessageRequest.builder()
                     .queueUrl(s)
@@ -73,14 +67,6 @@ public class QueueService {
             messages = sqsClient.receiveMessage(receiveMessageRequest).messages();
             allinfo.add(messages);
         }
-        for(int i=0; i<3; i++) {
-            readable_aux = "";
-            for(Message m: allinfo.get(i)){
-                key = keys.get(1);
-                readable_aux += m.toString() + "\n";
-            }
-            dict.put(key, readable_aux);
-        }
-        return dict;
+        return allinfo;
     }
 }
