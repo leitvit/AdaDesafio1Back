@@ -1,2 +1,25 @@
 databaseChangeLog:
-  -
+- changeSet:
+    id: 1695621330353-1
+    author: alisson (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: consumer_feedback_pkey
+            name: id
+            type: UUID
+        - column:
+            name: feedback_status
+            type: INTEGER
+        - column:
+            name: feedback_type
+            type: INTEGER
+        - column:
+            name: message
+            type: VARCHAR(255)
+        tableName: consumer_feedback
+

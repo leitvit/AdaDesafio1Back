@@ -1,6 +1,7 @@
 package com.ada.consumer.service;
 
-import com.ada.consumer.model.ConsumerFeedback;
+import com.ada.consumer.controller.record.ConsumerFeedbackRequest;
+import com.ada.consumer.model.entity.ConsumerFeedback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import software.amazon.awssdk.services.sns.model.*;
 import javax.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 
 @Service
@@ -57,16 +59,16 @@ public class SnsService {
      * @returns publishedMessageId
      * @throws RuntimeException in case of unsuccesfull publishing
      */
-    public String publishMessageToSNSTopic(ConsumerFeedback consumerFeedback) throws RuntimeException {
-        ConsumerFeedback.FeedbackType feedbackType = consumerFeedback.getFeedbackType();
-        String messageBody = consumerFeedback.getMessage();
+    public String publishMessageToSNSTopic(ConsumerFeedbackRequest rawFeedback) throws RuntimeException {
+        ConsumerFeedback.FeedbackType feedbackType = rawFeedback.feedbackType();
+        String feedbackMessage = rawFeedback.message();
         String topicArn = snsTopicArnMapping.get(feedbackType);
 
         PublishRequest publishRequest = PublishRequest.builder()
-                .message(messageBody)
+                .message(feedbackMessage)
                 .messageGroupId(defaultGroupId)
                 .topicArn(topicArn)
-                .messageDeduplicationId(consumerFeedback.getId())
+                .messageDeduplicationId(UUID.randomUUID().toString())
                 .build();
 
         PublishResponse publishResponse = snsClient.publish(publishRequest);

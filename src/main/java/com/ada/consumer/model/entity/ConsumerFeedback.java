@@ -1,14 +1,20 @@
-package com.ada.consumer.model;
+package com.ada.consumer.model.entity;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.GenericGenerator;
 
+import javax.persistence.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
+@Entity(name = "consumer_feedback")
 public class ConsumerFeedback {
 
     @Schema(description = "Tipo de feedback")
@@ -21,12 +27,19 @@ public class ConsumerFeedback {
         RECEBIDO, PROCESSANDO, FINALIZADO
     }
 
-    private String id;
+    @Id
+    @GenericGenerator(name = "uuid2", strategy = "uuid2")
+    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "uuid2")
+    @Column(length = 36, nullable = false, updatable = false)
+    private UUID id;
 
+    @Column(columnDefinition = "text", length = 1000)
     private String message;
 
+    @Column
     private FeedbackType feedbackType;
 
+    @Column
     private Status feedbackStatus = Status.RECEBIDO;
 
     private String generateId(String message) { //the use of a hash as the id eliminates the need to call databases or APIs, reducing latency
