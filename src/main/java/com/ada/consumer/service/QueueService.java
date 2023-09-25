@@ -1,18 +1,15 @@
 package com.ada.consumer.service;
 
-import com.ada.consumer.model.ConsumerFeedback;
+import com.ada.consumer.controller.record.ConsumerFeedbackRequest;
+import com.ada.consumer.model.entity.ConsumerFeedback;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.sqs.SqsClient;
 
-import software.amazon.awssdk.services.sqs.model.Message;
-import software.amazon.awssdk.services.sqs.model.ReceiveMessageRequest;
-import java.util.*;
+import software.amazon.awssdk.services.sqs.model.*;
 
-import software.amazon.awssdk.services.sqs.model.GetQueueAttributesRequest;
-import software.amazon.awssdk.services.sqs.model.GetQueueAttributesResponse;
-import software.amazon.awssdk.services.sqs.model.QueueAttributeName;
+import java.util.*;
 
 import javax.annotation.PostConstruct;
 import java.util.HashMap;
@@ -20,6 +17,9 @@ import java.util.HashMap;
 
 @Service
 public class QueueService {
+
+    @Autowired
+    private ConsumerFeedbackService consFeedbackService;
 
     @Autowired
     private SqsClient sqsClient;
@@ -51,22 +51,43 @@ public class QueueService {
         return Integer.parseInt(attributesResponse.attributes().get(QueueAttributeName.APPROXIMATE_NUMBER_OF_MESSAGES));
     }
 
-    public List<List<Message>> getAllInformation() {
+    public List<Message> getAllInformationFromQueueByType(ConsumerFeedback.FeedbackType feedbackType) {
         // here we must poll the three queues and return the parsed content summarized
-        List<software.amazon.awssdk.services.sqs.model.Message> messages;
-        List<List<software.amazon.awssdk.services.sqs.model.Message>> allinfo = new ArrayList<>();
-        List<String> URLs = Arrays.asList(
-                queueUrlCriticas,
-                queueUrlElogio,
-                queueUrlSugestoes
-        );
-        for(String s: URLs) {
-            ReceiveMessageRequest receiveMessageRequest = ReceiveMessageRequest.builder()
-                    .queueUrl(s)
-                    .build();
-            messages = sqsClient.receiveMessage(receiveMessageRequest).messages();
-            allinfo.add(messages);
-        }
-        return allinfo;
+        Integer maxMessages = 5;
+        ReceiveMessageRequest receiveMessageRequest = ReceiveMessageRequest.builder()
+                .queueUrl(sqsQueueURLMapping.get(feedbackType))
+                .maxNumberOfMessages(5)
+                .build();
+        List<Message> messagesRequested;
+        List<Message> allMessages = new ArrayList<>();
+
+        do {
+            messagesRequested = sqsClient.receiveMessage(receiveMessageRequest).messages();
+
+            var batchDeleteReq = DeleteMessageBatchRequest
+                    .builder()
+                    .queueUrl(sqsQueueURLMapping.get(feedbackType));
+
+            List<DeleteMessageBatchRequestEntry> deleteEntries = new ArrayList<>();
+
+            for (Message message : messagesRequested) {
+                allMessages.add(message);
+                consFeedbackService.saveFeedbacks(
+                        new ConsumerFeedbackRequest(
+                                message.body(),
+                                feedbackType
+                        )
+                );
+                deleteEntries.add(DeleteMessageBatchRequestEntry
+                        .builder()
+                        .id(message.messageId())
+                        .receiptHandle(message.receiptHandle())
+                        .build()
+                );
+            }
+            sqsClient.deleteMessageBatch(batchDeleteReq.entries(deleteEntries).build());
+        } while (maxMessages == messagesRequested.size());
+
+        return allMessages;
     }
 }

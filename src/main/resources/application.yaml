@@ -7,22 +7,28 @@ spring:
     password: cielo123
   liquibase:
     change-log: classpath:/db/changelog/changelog-master.yaml
+    user: ada-lovelace
+    password: cielo123
+    url: jdbc:postgresql://localhost:5432/consumer
+    enabled: false
+    test-rollback-on-update: true
   jpa:
     hibernate:
       ddl-auto: update
-    generate-ddl: false
+    generate-ddl: true
     properties:
       hibernate:
         show_sql: true
         hbm2ddl:
           auto: update
+        format_sql: true
   sql:
     init:
       mode: always
       continue-on-error: true
   jackson:
-  serialization:
-    FAIL_ON_EMPTY_BEANS: false
+    serialization:
+      FAIL_ON_EMPTY_BEANS: false
 
 
 server:
@@ -33,11 +39,11 @@ aws:
   sns:
     default-group-id: 1
     topic-arn:
-      elogios: arn:aws:sns:us-east-1:258160824945:bootcamp-desafio1-sns-topicoelogios.fifo
-      sugestoes: arn:aws:sns:us-east-1:258160824945:bootcamp-desafio1-sns-topicosugestoes.fifo
-      criticas: arn:aws:sns:us-east-1:258160824945:bootcamp-desafio1-sns-topicocriticas.fifo
+      elogios: arn:aws:sns:us-east-1:578310391489:bootcamp-desafio1-sns-topicoelogios.fifo
+      sugestoes: arn:aws:sns:us-east-1:578310391489:bootcamp-desafio1-sns-topicosugestoes.fifo
+      criticas: arn:aws:sns:us-east-1:578310391489:bootcamp-desafio1-sns-topicocriticas.fifo
   sqs:
     queue-url:
-      elogios: https://sqs.us-east-1.amazonaws.com/258160824945/bootcamp-desafio1-sqs-elogios.fifo
-      sugestoes: https://sqs.us-east-1.amazonaws.com/258160824945/bootcamp-desafio1-sqs-sugestoes.fifo
-      criticas: https://sqs.us-east-1.amazonaws.com/258160824945/bootcamp-desafio1-sqs-criticas.fifo
+      elogios: https://sqs.us-east-1.amazonaws.com/578310391489/bootcamp-desafio1-sqs-elogios.fifo
+      sugestoes: https://sqs.us-east-1.amazonaws.com/578310391489/bootcamp-desafio1-sqs-sugestoes.fifo
+      criticas: https://sqs.us-east-1.amazonaws.com/578310391489/bootcamp-desafio1-sqs-criticas.fifo

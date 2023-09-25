@@ -1,9 +1,9 @@
 package com.ada.consumer.controller;
 
-import com.ada.consumer.controller.record.ConsumerFeedbackRecord;
+import com.ada.consumer.controller.record.ConsumerFeedbackRequest;
 import com.ada.consumer.controller.record.FeedbackPostResponse;
 import com.ada.consumer.controller.record.GenericErrorResponse;
-import com.ada.consumer.service.FeedbackService;
+import com.ada.consumer.service.ConsumerFeedbackService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,15 +16,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Map;
-
 @RestController
 @RequestMapping(value = "v1", produces = "text/plain")
 @Tag(name = "bootcampback")
 public class FeedbackController {
 
     @Autowired
-    FeedbackService feedbackService;
+    ConsumerFeedbackService consumerFeedbackService;
 
     @PostMapping(
             value = "feedback",
@@ -37,9 +35,9 @@ public class FeedbackController {
                     " As filas SQS estão configuradas como subscribers destes tópicos." +
                     " Retorna um ID único referente a mensagem publicada."
     )
-    public ResponseEntity postFeedback(@RequestBody @Validated ConsumerFeedbackRecord consumerFeedbackRecord) {
+    public ResponseEntity postFeedback(@RequestBody @Validated ConsumerFeedbackRequest consumerFeedbackRequest) {
         try {
-            var messageId = feedbackService.receiveFeedback(consumerFeedbackRecord);
+            var messageId = consumerFeedbackService.publishFeedback(consumerFeedbackRequest);
             return ResponseEntity
                     .status(HttpStatus.CREATED)
                     .body(new FeedbackPostResponse(messageId));
@@ -54,7 +52,5 @@ public class FeedbackController {
                     );
         }
     }
-
-
 
 }
